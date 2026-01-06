@@ -1,0 +1,159 @@
+/* src/AdminLayout.css */
+
+/* --- 1. Import Roboto Font --- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* --- 2. Global Variables --- */
+:root {
+  --sidebar-bg: #1e293b;       /* Dark Slate Blue */
+  --sidebar-hover: #334155;    /* Lighter Slate */
+  --sidebar-text: #94a3b8;     /* Muted Grey */
+  --sidebar-text-active: #fff; /* White */
+  --primary-blue: #2563eb;     /* Bright Blue */
+  --border-color: #e2e8f0;     /* Light Grey Border */
+  --header-height: 70px;
+  --sidebar-width: 260px;
+}
+
+/* --- 3. Body & Reset --- */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- 4. Main Content Container --- */
+.main-content {
+  margin-top: var(--header-height);
+  margin-left: 0;
+  padding: 2rem;
+  transition: margin-left 0.3s ease-in-out;
+  min-height: calc(100vh - var(--header-height));
+}
+
+@media (min-width: 1024px) {
+  .main-content {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+/* --- 5. Mobile Overlay (Shared State) --- */
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+}
+
+@media (min-width: 1024px) {
+  .mobile-overlay {
+    display: none;
+  }
+}
+
+/* src/components/AdminSidebar.css */
+
+.admin-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  padding-top: var(--header-height);
+  z-index: 30;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%); /* Hidden by default on mobile */
+}
+
+/* Show sidebar on Desktop */
+@media (min-width: 1024px) {
+  .admin-sidebar {
+    transform: translateX(0);
+  }
+}
+
+/* Open state for Mobile */
+.admin-sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem 0.75rem;
+  overflow-y: auto;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--sidebar-text-active);
+}
+
+.nav-link.active {
+  background-color: var(--sidebar-hover);
+  color: var(--sidebar-text-active);
+}
+
+/* Sidebar Footer / Support */
+.sidebar-footer {
+  border-top: 1px solid #334155;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.footer-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.help-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--sidebar-text);
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.help-btn:hover {
+  color: white;
+}
+
+.mobile-user-info {
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}

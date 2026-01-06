@@ -1,0 +1,134 @@
+/* src/components/AdminLogin.css */
+
+/* Global Reset for this component context */
+* {
+  box-sizing: border-box;
+}
+
+/* Main Page Container */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #E0E5E0; /* Exact background color from image */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* White Card */
+.login-card {
+  background-color: #ffffff;
+  padding: 40px; /* p-10 equivalent */
+  border-radius: 16px; /* rounded-2xl equivalent */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* shadow-lg */
+  width: 100%;
+  max-width: 448px; /* max-w-md */
+}
+
+/* Header Section */
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+/* Icon Container */
+.icon-container {
+  width: 56px;
+  height: 56px;
+  background-color: rgba(157, 252, 150, 0.5); /* #9dfc96 with opacity */
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: #000;
+}
+
+.login-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827; /* gray-900 */
+  margin: 0;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  color: #6b7280; /* gray-500 */
+  margin-top: 4px;
+}
+
+/* Form Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* space-y-6 */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151; /* gray-700 */
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  border-radius: 8px;
+  font-size: 16px;
+  color: #374151;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-input:focus {
+  border-color: #42a0ff;
+}
+
+/* Error Message */
+.error-message {
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #ef4444;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #42a0ff; /* Exact match */
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
