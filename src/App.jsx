@@ -1,5 +1,6 @@
+import AdminDocs from "./pages/Home/AdminDocs";
+import Homepage from "./pages/Home/AdminDocs";
 import AdminLogin from "./pages/login/Login"
-import Overview from "./pages/Overview/Overview"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
      <BrowserRouter>
         <Routes>
           <Route path="/" element={<AdminLogin />} />
-          <Route path="overview" element={<Overview />} />
+          <Route path="admindoc" element={<AdminDocs />} />
         </Routes>
       </BrowserRouter>
     </>

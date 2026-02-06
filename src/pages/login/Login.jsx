@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { app } from '../../firebaseConfig';
-// import { child, getDatabase, ref, get } from "firebase/database";
 import { Lock } from 'lucide-react';
-import './login.css'; // Import the pure CSS file
-
+import './login.css'; 
+    
 const AdminLogin = () => {
     const auth = getAuth(app);
     const navigate = useNavigate();
@@ -15,7 +14,7 @@ try {
         const unsubscribe = onAuthStateChanged(auth, user => {
             if (user) {
                 console.log(user);
-                navigate('overview');
+                navigate('homepage');
             } else {
                 console.log("No user");
             }

@@ -1,0 +1,178 @@
+/* src/CSS/AdminDocs.css */
+
+.admin-docs-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-title {
+    text-align: center;
+    color: #1f2937;
+    margin-bottom: 30px;
+}
+
+/* --- Upload Card --- */
+.upload-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 40px;
+}
+
+.upload-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.file-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+}
+
+.upload-btn {
+    background-color: #2563EB;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.upload-btn:hover:not(:disabled) {
+    background-color: #1d4ed8;
+}
+
+.upload-btn:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background-color: #e5e7eb;
+    margin-top: 15px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: #2563EB;
+    transition: width 0.3s ease;
+}
+
+/* --- Documents Table --- */
+.docs-list h3 {
+    margin-bottom: 20px;
+    color: #374151;
+}
+
+.responsive-table {
+    overflow-x: auto; /* Allows table to scroll on mobile */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.docs-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Forces scroll on small screens */
+}
+
+.docs-table th {
+    background-color: #f9fafb;
+    text-align: left;
+    padding: 15px;
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.docs-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-link {
+    color: #2563EB;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.file-link:hover { text-decoration: underline; }
+
+.meta-cell {
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+/* Buttons */
+.toggle-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 80px;
+    transition: all 0.2s;
+}
+
+.toggle-btn.on {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #34d399;
+}
+
+.toggle-btn.off {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #f87171;
+}
+
+.delete-btn {
+    background-color: transparent;
+    color: #dc2626;
+    border: 1px solid #dc2626;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626;
+    color: white;
+}
+
+.no-docs {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+    font-style: italic;
+    background: #f9fafb;
+    border-radius: 8px;
+}
