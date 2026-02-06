@@ -1,7 +1,7 @@
-import AdminDocs from "./pages/Home/AdminDocs";
-import Homepage from "./pages/Home/AdminDocs";
+
 import AdminLogin from "./pages/login/Login"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AdminHome from "./pages/Admin/AdminHome";
 
 function App() {
   return (
@@ -9,7 +9,8 @@ function App() {
      <BrowserRouter>
         <Routes>
           <Route path="/" element={<AdminLogin />} />
-          <Route path="admindoc" element={<AdminDocs />} />
+          <Route path="adminHome" element={<AdminHome />} />
+
         </Routes>
       </BrowserRouter>
     </>

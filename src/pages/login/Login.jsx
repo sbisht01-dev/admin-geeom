@@ -14,7 +14,7 @@ try {
         const unsubscribe = onAuthStateChanged(auth, user => {
             if (user) {
                 console.log(user);
-                navigate('homepage');
+                navigate('adminHome');
             } else {
                 console.log("No user");
             }
