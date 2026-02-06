@@ -1,15 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { db, storage } from '../../firebaseConfig'; // Adjust path if needed
+import { db, storage } from '../../firebaseConfig'; 
 import { ref as sRef, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { ref, onValue, set, remove, update } from "firebase/database";
-import "./AdminDocs.css";
+import './AdminDocs.css';
+
+// --- Icons ---
+const CloudIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+    <polyline points="17 8 12 3 7 8"></polyline>
+    <line x1="12" y1="3" x2="12" y2="15"></line>
+  </svg>
+);
+
+const FileIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+    <polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+);
 
 const AdminDocs = () => {
     const [file, setFile] = useState(null);
     const [documents, setDocuments] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
-    // --- 1. Fetch Documents (Real-time) ---
+    
+    // New State for Drag & Drop Visuals
+    const [isDragging, setIsDragging] = useState(false);
+
+    // --- 1. Fetch Documents ---
     useEffect(() => {
         const docsRef = ref(db, 'site_documents');
         const unsubscribe = onValue(docsRef, (snapshot) => {
@@ -19,7 +39,6 @@ const AdminDocs = () => {
                     id: key,
                     ...data[key]
                 }));
-                // Sort by newest first
                 setDocuments(docList.reverse());
             } else {
                 setDocuments([]);
@@ -28,19 +47,34 @@ const AdminDocs = () => {
         return () => unsubscribe();
     }, []);
 
-    // --- 2. Handle File Selection ---
+    // --- 2. Handle File Selection (Click & Drag) ---
     const handleFileChange = (e) => {
-        if (e.target.files[0]) {
-            setFile(e.target.files[0]);
+        if (e.target.files[0]) setFile(e.target.files[0]);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            setFile(e.dataTransfer.files[0]);
         }
     };
 
     // --- 3. Upload File ---
     const handleUpload = () => {
-        if (!file) return alert("Please select a file first!");
+        if (!file) return;
 
         setIsUploading(true);
-        // Create a unique file name
         const fileName = `${Date.now()}_${file.name}`;
         const storageRef = sRef(storage, `documents/${fileName}`);
         
@@ -57,92 +91,107 @@ const AdminDocs = () => {
                 alert("Upload failed.");
             }, 
             () => {
-                // Upload Complete: Get URL and Save to DB
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     const newDocRef = ref(db, `site_documents/${Date.now()}`);
-                    
                     set(newDocRef, {
                         name: file.name,
                         url: downloadURL,
                         type: file.type,
                         size: (file.size / 1024).toFixed(2) + " KB",
                         uploadedAt: new Date().toLocaleString(),
-                        isVisible: true, // Default to visible
-                        storagePath: `documents/${fileName}` // Saved for deletion later
-                    })
-                    .then(() => {
+                        isVisible: true,
+                        storagePath: `documents/${fileName}`
+                    }).then(() => {
                         setIsUploading(false);
                         setFile(null);
                         setUploadProgress(0);
                         alert("File uploaded successfully!");
-                        // Reset input
-                        document.getElementById('fileInput').value = "";
                     });
                 });
             }
         );
     };
 
-    // --- 4. Toggle Visibility ---
+    // --- 4. Toggle & Delete Handlers (Same as before) ---
     const toggleVisibility = (docId, currentStatus) => {
-        update(ref(db, `site_documents/${docId}`), {
-            isVisible: !currentStatus
-        });
+        update(ref(db, `site_documents/${docId}`), { isVisible: !currentStatus });
     };
 
-    // --- 5. Delete Document ---
     const deleteDocument = (docId, storagePath) => {
-        if(!window.confirm("Are you sure? This cannot be undone.")) return;
-
-        // 1. Delete from Storage
+        if(!window.confirm("Delete this document?")) return;
         const fileRef = sRef(storage, storagePath);
-        deleteObject(fileRef).then(() => {
-            // 2. Delete from Database
-            remove(ref(db, `site_documents/${docId}`))
-                .then(() => alert("Document deleted."))
-                .catch((err) => alert("Error removing from DB: " + err.message));
-        }).catch((error) => {
-            console.error("Error deleting file:", error);
-            alert("Error deleting file from storage. It might not exist.");
-            // Force remove from DB even if storage delete fails
-            remove(ref(db, `site_documents/${docId}`));
-        });
+        deleteObject(fileRef)
+            .then(() => remove(ref(db, `site_documents/${docId}`)))
+            .catch(() => remove(ref(db, `site_documents/${docId}`))); 
+            // Fallback: delete from DB even if storage delete fails
     };
 
     return (
         <div className="admin-docs-container">
-            <h1 className="admin-title">Document Manager</h1>
+            <h2 className="admin-title">Document Manager</h2>
 
-            {/* --- Upload Section --- */}
-            <div className="upload-card">
-                <h3>Upload New Document</h3>
-                <div className="upload-controls">
+            {/* --- New Modern Upload Area --- */}
+            <div className="upload-section">
+                
+                {/* Drag & Drop Zone */}
+                <div 
+                    className={`drop-zone ${isDragging ? 'dragging' : ''} ${file ? 'has-file' : ''}`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                >
                     <input 
                         type="file" 
                         id="fileInput" 
                         onChange={handleFileChange} 
-                        className="file-input"
+                        className="hidden-input" 
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsx" // Optional: restrict types
                     />
-                    <button 
-                        onClick={handleUpload} 
-                        disabled={isUploading || !file}
-                        className="upload-btn"
-                    >
-                        {isUploading ? `Uploading ${uploadProgress}%` : "Upload File"}
-                    </button>
+                    
+                    {!file ? (
+                        <label htmlFor="fileInput" className="drop-label">
+                            <div className="icon-bg"><CloudIcon /></div>
+                            <p className="primary-text">Click to upload or drag and drop</p>
+                            <p className="secondary-text">PDF, DOC, PNG, JPG (max 10MB)</p>
+                        </label>
+                    ) : (
+                        <div className="file-preview-card">
+                            <div className="preview-info">
+                                <FileIcon />
+                                <div className="preview-text">
+                                    <span className="p-name">{file.name}</span>
+                                    <span className="p-size">{(file.size / 1024).toFixed(1)} KB</span>
+                                </div>
+                            </div>
+                            <button className="remove-file-btn" onClick={() => setFile(null)}>✕</button>
+                        </div>
+                    )}
                 </div>
-                {isUploading && (
-                    <div className="progress-bar-bg">
-                        <div className="progress-bar-fill" style={{width: `${uploadProgress}%`}}></div>
+
+                {/* Upload Button & Progress (Only visible if file selected) */}
+                {file && (
+                    <div className="upload-actions">
+                        {isUploading ? (
+                            <div className="progress-container">
+                                <div className="progress-bar-bg">
+                                    <div className="progress-bar-fill" style={{width: `${uploadProgress}%`}}></div>
+                                </div>
+                                <span className="progress-text">{uploadProgress}% Uploading...</span>
+                            </div>
+                        ) : (
+                            <button onClick={handleUpload} className="modern-upload-btn">
+                                Upload Document
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
 
-            {/* --- Documents List --- */}
+            {/* --- Existing Table Logic --- */}
             <div className="docs-list">
                 <h3>Uploaded Documents ({documents.length})</h3>
-                
-                {documents.length === 0 ? (
+                {/* ... (Your existing Table/List code remains exactly the same) ... */}
+                 {documents.length === 0 ? (
                     <p className="no-docs">No documents uploaded yet.</p>
                 ) : (
                     <div className="responsive-table">

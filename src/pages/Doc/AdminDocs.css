@@ -1,96 +1,230 @@
 /* src/CSS/AdminDocs.css */
 
+/* ... (Keep top section: .admin-docs-container, .upload-card, etc. AS IS) ... */
+
+/* src/CSS/AdminDocs.css */
+
 .admin-docs-container {
-    max-width: 1000px;
+    max-width: 900px;
     margin: 40px auto;
     padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Aileron', sans-serif;
 }
 
 .admin-title {
     text-align: center;
-    color: #1f2937;
-    margin-bottom: 30px;
-}
-
-/* --- Upload Card --- */
-.upload-card {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    border: 1px solid #e5e7eb;
+    color: #111827;
     margin-bottom: 40px;
+    font-weight: 700;
 }
 
-.upload-controls {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    margin-top: 15px;
-    flex-wrap: wrap;
+/* =========================================
+   MODERN DRAG & DROP ZONE
+   ========================================= */
+.upload-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 50px;
 }
 
-.file-input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-}
-
-.upload-btn {
-    background-color: #2563EB;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
+.drop-zone {
+    border: 2px dashed #E5E7EB;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: #F9FAFB;
+    position: relative;
     cursor: pointer;
+}
+
+.drop-zone:hover {
+    border-color: #2563EB;
+    background-color: #EFF6FF;
+}
+
+.drop-zone.dragging {
+    border-color: #2563EB;
+    background-color: #DBEAFE;
+    transform: scale(1.01);
+}
+
+.hidden-input {
+    display: none;
+}
+
+.drop-label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.icon-bg {
+    background: #fff;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+}
+
+.primary-text {
+    font-size: 16px;
     font-weight: 600;
-    transition: background 0.2s;
+    color: #374151;
+    margin: 0 0 5px 0;
 }
 
-.upload-btn:hover:not(:disabled) {
-    background-color: #1d4ed8;
+.secondary-text {
+    font-size: 13px;
+    color: #9CA3AF;
+    margin: 0;
 }
 
-.upload-btn:disabled {
-    background-color: #9ca3af;
-    cursor: not-allowed;
+/* --- Selected File Preview --- */
+.drop-zone.has-file {
+    padding: 20px;
+    border-style: solid;
+    border-color: #E5E7EB;
+    background: #fff;
+}
+
+.file-preview-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #F3F4F6;
+    padding: 12px 16px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.preview-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    overflow: hidden;
+    /* prevents text overflow */
+}
+
+.preview-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.p-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1F2937;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.p-size {
+    font-size: 11px;
+    color: #6B7280;
+}
+
+.remove-file-btn {
+    background: none;
+    border: none;
+    color: #9CA3AF;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.remove-file-btn:hover {
+    color: #EF4444;
+}
+
+/* --- Upload Actions (Button & Progress) --- */
+.upload-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.modern-upload-btn {
+    background-color: #0D131A;
+    /* Dark theme to match brand */
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 32px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modern-upload-btn:hover {
+    background-color: #2563EB;
+    /* Brand Blue on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2);
+}
+
+.progress-container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
 }
 
 .progress-bar-bg {
     width: 100%;
-    height: 6px;
-    background-color: #e5e7eb;
-    margin-top: 15px;
-    border-radius: 3px;
+    height: 8px;
+    background-color: #F3F4F6;
+    border-radius: 10px;
     overflow: hidden;
+    margin-bottom: 8px;
 }
 
 .progress-bar-fill {
     height: 100%;
     background-color: #2563EB;
     transition: width 0.3s ease;
+    border-radius: 10px;
 }
 
-/* --- Documents Table --- */
+.progress-text {
+    font-size: 12px;
+    color: #6B7280;
+    font-weight: 500;
+}
+
+/* --- Documents Table (Desktop Default) --- */
 .docs-list h3 {
     margin-bottom: 20px;
     color: #374151;
 }
 
 .responsive-table {
-    overflow-x: auto; /* Allows table to scroll on mobile */
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     border: 1px solid #e5e7eb;
+    /* Removed overflow-x: auto here because we handle it via media queries now */
 }
 
 .docs-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px; /* Forces scroll on small screens */
 }
 
 .docs-table th {
@@ -119,16 +253,21 @@
     color: #2563EB;
     text-decoration: none;
     font-weight: 500;
+    word-break: break-word;
+    /* Prevents long filenames from breaking layout */
 }
 
-.file-link:hover { text-decoration: underline; }
+.file-link:hover {
+    text-decoration: underline;
+}
 
 .meta-cell {
     color: #6b7280;
     line-height: 1.4;
+    font-size: 13px;
 }
 
-/* Buttons */
+/* --- Buttons --- */
 .toggle-btn {
     padding: 6px 12px;
     border-radius: 20px;
@@ -136,7 +275,7 @@
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    width: 80px;
+    min-width: 80px;
     transition: all 0.2s;
 }
 
@@ -175,4 +314,107 @@
     font-style: italic;
     background: #f9fafb;
     border-radius: 8px;
+}
+
+
+@media (max-width: 768px) {
+    /* 1. Reset Table Structure to Block */
+    .docs-table, .docs-table tbody, .docs-table tr, .docs-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box; /* Crucial for padding */
+    }
+
+    /* 2. Hide Table Header */
+    .docs-table thead {
+        display: none;
+    }
+
+    /* 3. Style Rows as "Professional Cards" */
+    .docs-table tr {
+        background: white;
+        margin-bottom: 20px; /* More space between cards */
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 20px; /* Consistent internal padding */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* Consistent gap between internal sections */
+    }
+
+    /* 4. Cell Styling - Resetting Defaults */
+    .docs-table td {
+        padding: 0; /* Remove default table padding */
+        border: none; /* Remove default table borders */
+        text-align: left;
+    }
+
+    /* --- Section 1: File Header (Name & Icon) --- */
+    .docs-table td:nth-child(1) {
+        border-bottom: 1px solid #F3F4F6;
+        padding-bottom: 12px;
+        margin-bottom: 0;
+    }
+    
+    .file-info {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+    }
+
+    /* --- Section 2: Metadata (Size & Date) --- */
+    .docs-table td:nth-child(2) {
+        color: #6B7280;
+        font-size: 13px;
+        background-color: #F9FAFB; /* Subtle background for details */
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+    .meta-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    /* --- Section 3: Action Buttons Area --- */
+    /* We group the last two cells (Visible & Delete) visually */
+    .docs-table td:nth-child(3),
+    .docs-table td:nth-child(4) {
+        width: auto;
+        display: inline-block; /* Allow them to sit side-by-side */
+    }
+
+    /* Flex container trick: Use the row (tr) gap we set above, 
+       but we also need a specific wrapper behavior for buttons if we want them 
+       side-by-side. Since we can't add a div wrapper inside the TR easily in React 
+       without changing structure, we'll use a hack or just ensure they flow nicely.
+       
+       Better approach: Make the TR a grid or flex container.
+    */
+    
+    /* Let's layout the buttons row */
+    .docs-table td:nth-child(3) {
+        margin-top: 4px;
+    }
+
+    /* Make buttons full width or side-by-side */
+    .toggle-btn, .delete-btn {
+        width: 100%; /* Easy tap targets */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 12px;
+        margin-bottom: 8px; /* Gap between buttons */
+    }
+    
+    /* If you prefer buttons side-by-side, use this instead: */
+    /* .docs-table td:nth-child(3), .docs-table td:nth-child(4) {
+        display: inline-block;
+        width: 48%; 
+        margin-right: 2%;
+    }
+    .docs-table td:nth-child(4) { margin-right: 0; }
+    */
 }

@@ -4,7 +4,7 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebas
 import { app } from '../../firebaseConfig';
 import { Lock } from 'lucide-react';
 import './login.css'; 
-    
+     
 const AdminLogin = () => {
     const auth = getAuth(app);
     const navigate = useNavigate();
@@ -25,20 +25,6 @@ try {
     }
     })
     
-    // {
-    //     const db = getDatabase(app);
-    //     const dbRef = ref(db);
-    //     get(child(dbRef, `site_variables`)).then((snapshot) => {
-    //         if (snapshot.exists()) {
-    //             console.log(snapshot.val());
-    //         } else {
-    //             console.log("No data available");
-    //         }
-    //     }).catch((error) => {
-    //         console.error(error);
-    //     });
-    // }
-
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
