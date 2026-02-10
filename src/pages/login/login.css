@@ -20,10 +20,10 @@
 /* White Card */
 .login-card {
   background-color: #ffffff;
-  padding: 40px; /* p-10 equivalent */
+  padding: 24px; /* p-10 equivalent */
   border-radius: 16px; /* rounded-2xl equivalent */
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* shadow-lg */
-  width: 100%;
+  width: 90%;
   max-width: 448px; /* max-w-md */
 }
 
