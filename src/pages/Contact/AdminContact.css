@@ -1,0 +1,218 @@
+/* src/CSS/AdminContact.css */
+
+/* --- Main Container --- */
+.admin-contact-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px 80px 20px; /* Extra bottom padding for scroll space */
+    position: relative;
+}
+
+/* --- Sticky Header Section --- */
+.admin-section-title {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    
+    /* Sticky Visuals */
+    background-color: rgba(243, 244, 246, 0.95); /* Matches page grey + transparency */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    
+    margin: 0 -20px 30px -20px; /* Negative margin to stretch full width */
+    padding: 20px 25px;
+    
+    /* Typography */
+    color: #111827;
+    font-size: 24px;
+    font-weight: 800; /* Extra Bold */
+    letter-spacing: -0.5px;
+    
+    /* Bottom border for separation */
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Optional: Add a subtle indicator/icon to the title */
+.admin-section-title::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 24px;
+    background-color: #2563EB; /* Brand Blue Accent */
+    margin-right: 12px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+/* --- Form Layout --- */
+.admin-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* --- Card Sections --- */
+.form-section {
+    background: white;
+    padding: 25px;
+    border-radius: 16px; /* Softer corners */
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-section:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.form-section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1F2937;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #F3F4F6;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* --- Inputs --- */
+.admin-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.admin-input-group:last-child {
+    margin-bottom: 0;
+}
+
+.admin-input-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4B5563;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-input-group input {
+    padding: 14px 16px; /* Larger touch target */
+    background-color: #F9FAFB;
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #111827;
+    transition: all 0.2s ease;
+}
+
+.admin-input-group input:focus {
+    outline: none;
+    background-color: white;
+    border-color: #2563EB;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.admin-input-group input::placeholder {
+    color: #9CA3AF;
+}
+
+/* --- Save Button --- */
+.admin-save-btn {
+    background-color: #0D131A;
+    color: white;
+    padding: 18px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    
+    /* Make button sticky at bottom on mobile? Optional, currently standard flow */
+}
+
+.admin-save-btn:hover:not(:disabled) {
+    background-color: #2563EB;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+.admin-save-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.admin-save-btn:disabled {
+    background-color: #9CA3AF;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* --- Loader --- */
+.admin-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    color: #6B7280;
+    font-weight: 500;
+}
+
+/* =========================================
+   RESPONSIVENESS & LAYOUT TWEAKS
+   ========================================= */
+
+/* Tablet & Desktop: Grid Layout for Inputs */
+@media (min-width: 768px) {
+    /* Create a grid context for form sections that have multiple similar inputs */
+    
+    /* We can use :nth-child logic or just apply grid to the section content generically.
+       Since we didn't add specific classes to the groups in JSX, we'll assume 
+       direct stacking. 
+    */
+    
+    /* Example: Make Phone/WhatsApp side-by-side on larger screens */
+    .form-section {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    /* If we want 2 columns for inputs inside the section */
+    /* Note: This requires the JSX inputs to be direct children of .form-section div */
+}
+
+@media (max-width: 600px) {
+    .admin-contact-wrapper {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .admin-section-title {
+        font-size: 20px;
+        padding: 15px 20px;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    .form-section {
+        padding: 20px 15px;
+    }
+
+    /* Stack inputs tighter on mobile */
+    .admin-input-group {
+        margin-bottom: 15px;
+    }
+    
+    .admin-input-group input {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}

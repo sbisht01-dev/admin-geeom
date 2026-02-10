@@ -3,6 +3,8 @@
 /* Global Reset for this component context */
 * {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 /* Main Page Container */

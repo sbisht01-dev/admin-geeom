@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, storage } from '../../firebaseConfig'; 
+import { db, storage } from '../../firebaseConfig'; // Adjust path as needed
 import { ref as sRef, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { ref, onValue, set, remove, update } from "firebase/database";
 import './AdminDocs.css';
@@ -20,19 +20,33 @@ const FileIcon = () => (
   </svg>
 );
 
+const ImageIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+    <polyline points="21 15 16 10 5 21"></polyline>
+  </svg>
+);
+
 const AdminDocs = () => {
+    // --- Document States ---
     const [file, setFile] = useState(null);
     const [documents, setDocuments] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
-    
-    // New State for Drag & Drop Visuals
     const [isDragging, setIsDragging] = useState(false);
 
-    // --- 1. Fetch Documents ---
+    // --- Logo States ---
+    const [logoFile, setLogoFile] = useState(null);
+    const [currentLogo, setCurrentLogo] = useState(null);
+    const [logoProgress, setLogoProgress] = useState(0);
+    const [isLogoUploading, setIsLogoUploading] = useState(false);
+
+    // --- 1. Fetch Data (Docs & Logo) ---
     useEffect(() => {
+        // Fetch Documents
         const docsRef = ref(db, 'site_documents');
-        const unsubscribe = onValue(docsRef, (snapshot) => {
+        const unsubDocs = onValue(docsRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 const docList = Object.keys(data).map(key => ({
@@ -44,40 +58,39 @@ const AdminDocs = () => {
                 setDocuments([]);
             }
         });
-        return () => unsubscribe();
+
+        // Fetch Current Logo
+        const logoRef = ref(db, 'site_identity/logo_url');
+        const unsubLogo = onValue(logoRef, (snapshot) => {
+            const url = snapshot.val();
+            if (url) setCurrentLogo(url);
+        });
+
+        return () => {
+            unsubDocs();
+            unsubLogo();
+        };
     }, []);
 
-    // --- 2. Handle File Selection (Click & Drag) ---
+    // --- 2. Document Handlers ---
     const handleFileChange = (e) => {
         if (e.target.files[0]) setFile(e.target.files[0]);
     };
 
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
-    };
-
+    const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
+    const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
     const handleDrop = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
+        e.preventDefault(); setIsDragging(false);
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             setFile(e.dataTransfer.files[0]);
         }
     };
 
-    // --- 3. Upload File ---
     const handleUpload = () => {
         if (!file) return;
-
         setIsUploading(true);
         const fileName = `${Date.now()}_${file.name}`;
         const storageRef = sRef(storage, `documents/${fileName}`);
-        
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         uploadTask.on('state_changed', 
@@ -112,7 +125,6 @@ const AdminDocs = () => {
         );
     };
 
-    // --- 4. Toggle & Delete Handlers (Same as before) ---
     const toggleVisibility = (docId, currentStatus) => {
         update(ref(db, `site_documents/${docId}`), { isVisible: !currentStatus });
     };
@@ -123,17 +135,99 @@ const AdminDocs = () => {
         deleteObject(fileRef)
             .then(() => remove(ref(db, `site_documents/${docId}`)))
             .catch(() => remove(ref(db, `site_documents/${docId}`))); 
-            // Fallback: delete from DB even if storage delete fails
+    };
+
+    // --- 3. Logo Handlers ---
+    const handleLogoSelect = (e) => {
+        if (e.target.files[0]) setLogoFile(e.target.files[0]);
+    };
+
+    const handleLogoUpload = () => {
+        if (!logoFile) return;
+        setIsLogoUploading(true);
+        
+        // We use a timestamp to avoid caching issues with the same filename
+        const fileName = `site_logo_${Date.now()}`; 
+        const logoStorageRef = sRef(storage, `site_assets/${fileName}`);
+        const uploadTask = uploadBytesResumable(logoStorageRef, logoFile);
+
+        uploadTask.on('state_changed', 
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setLogoProgress(Math.round(progress));
+            },
+            (error) => {
+                console.error("Logo Upload Error:", error);
+                setIsLogoUploading(false);
+                alert("Logo upload failed.");
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    // Update Database with new URL
+                    set(ref(db, 'site_identity/logo_url'), downloadURL)
+                    .then(() => {
+                        setIsLogoUploading(false);
+                        setLogoFile(null);
+                        setLogoProgress(0);
+                        alert("Site Logo Updated!");
+                    });
+                });
+            }
+        );
     };
 
     return (
         <div className="admin-docs-container">
-            <h2 className="admin-title">Document Manager</h2>
+            <h2 className="admin-title">Document & Brand Manager</h2>
 
-            {/* --- New Modern Upload Area --- */}
+  <div className="logo-section">
+                <h3 className="section-label">Site Logo</h3>
+                <div className="logo-grid">
+                    
+                    {/* Left: Preview */}
+                    <div className="logo-preview-container">
+                        <span className="logo-sub-label">Current Logo</span>
+                        <div className="logo-box">
+                            {currentLogo ? (
+                                <img src={currentLogo} alt="Site Logo" className="logo-img" />
+                            ) : (
+                                <div className="logo-placeholder">No Logo Set</div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right: Upload Control */}
+                    <div className="logo-upload-control">
+                        <span className="logo-sub-label">Update Logo</span>
+                        <div className="mini-upload-box">
+                            <input type="file" id="logoInput" onChange={handleLogoSelect} accept="image/*" />
+                            <label htmlFor="logoInput" className="mini-upload-label">
+                                {logoFile ? (
+                                    <span className="selected-file-text">📸 {logoFile.name}</span>
+                                ) : (
+                                    <>
+                                        <ImageIcon />
+                                        <span>Select Image</span>
+                                    </>
+                                )}
+                            </label>
+                        </div>
+                        
+                        {logoFile && (
+                             <button 
+                                onClick={handleLogoUpload} 
+                                className="logo-save-btn"
+                                disabled={isLogoUploading}
+                             >
+                                {isLogoUploading ? `Uploading ${logoProgress}%` : "Save Logo"}
+                             </button>
+                        )}
+                    </div>
+                </div>
+            </div>
             <div className="upload-section">
-                
-                {/* Drag & Drop Zone */}
+
+                <h3 className="section-label">Upload New Document</h3>
                 <div 
                     className={`drop-zone ${isDragging ? 'dragging' : ''} ${file ? 'has-file' : ''}`}
                     onDragOver={handleDragOver}
@@ -145,7 +239,7 @@ const AdminDocs = () => {
                         id="fileInput" 
                         onChange={handleFileChange} 
                         className="hidden-input" 
-                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsx" // Optional: restrict types
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.xlsx" 
                     />
                     
                     {!file ? (
@@ -168,7 +262,6 @@ const AdminDocs = () => {
                     )}
                 </div>
 
-                {/* Upload Button & Progress (Only visible if file selected) */}
                 {file && (
                     <div className="upload-actions">
                         {isUploading ? (
@@ -187,10 +280,8 @@ const AdminDocs = () => {
                 )}
             </div>
 
-            {/* --- Existing Table Logic --- */}
             <div className="docs-list">
                 <h3>Uploaded Documents ({documents.length})</h3>
-                {/* ... (Your existing Table/List code remains exactly the same) ... */}
                  {documents.length === 0 ? (
                     <p className="no-docs">No documents uploaded yet.</p>
                 ) : (
@@ -217,7 +308,7 @@ const AdminDocs = () => {
                                         </td>
                                         <td className="meta-cell">
                                             <small>Size: {doc.size}</small><br/>
-                                            <small>Date: {doc.uploadedAt}</small>
+                                            <small>Date: {doc.uploadedAt ? doc.uploadedAt.split(',')[0] : ''}</small>
                                         </td>
                                         <td>
                                             <button 
